@@ -16,7 +16,7 @@ def get_data_MDL_one_instance(model, instance, dataset):
     """
     s = model.get_minimum_data(instance)
     out = code_length_integer(len(s)) # |opt^{-1}(o)|
-    out = math.log2(math.comb(len(dataset.vars), len(s))) # which combination of variable to set
+    out += math.log2(math.comb(len(dataset.vars), len(s))) # which combination of variable to set
     for v in s:
         out += math.log2(len(dataset.domains[v]) - 1) # which value (not the optimal one)
     return out
