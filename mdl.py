@@ -1,36 +1,45 @@
 import math
 
 def code_length_integer(n):
-    """ Compute the length of the optimal integer encoding
+    """ Computes the length of the optimal integer encoding
     Check Rissanen, 1983
     """
-    out = math.log2(2.865064)
-    n+=1 # Rissanen code is for n>0, so shift by 1 to be able to encode 0
+    l = math.log2(2.865064)
+    n += 1 # Rissanen code is for n>0, so shift by 1 to be able to encode 0
     while n > 0:
-        out += math.log2(n)
+        l += math.log2(n)
         n = math.log2(n)
-    return out
+    return l
+
+def check_soundness(model, variables, instance):
+    """ Verifies that opt(opt^{-1}(o)) = o
+    """
+    code = {}
+    for v in variables:
+        code[v] = instance[v]
+    return model.get_preferred_extension(code) == instance
 
 def get_data_MDL_one_instance(model, instance, dataset):
-    """ Get the MDL of one instance
+    """ Gets the MDL of one instance
     """
     s = model.get_minimum_data(instance)
-    out = code_length_integer(len(s)) # |opt^{-1}(o)|
-    out += math.log2(math.comb(len(dataset.vars), len(s))) # which combination of variable to set
+    assert(check_soundness(model, s, instance))
+    l = code_length_integer(len(s)) # |opt^{-1}(o)|
+    l += math.log2(math.comb(len(dataset.vars), len(s))) # which combination of variable to set
     for v in s:
-        out += math.log2(len(dataset.domains[v]) - 1) # which value (not the optimal one)
-    return out
+        l += math.log2(len(dataset.domains[v]) - 1) # which value (not the optimal one)
+    return l
 
 def get_data_MDL(model, dataset):
-    """ Get the MDL of a dataset
+    """ Gets the MDL of a dataset
     """
-    sum_score = code_length_integer(len(dataset.dataset)) # length of dataset
+    l = code_length_integer(dataset.dataset_len) # length of dataset
     for instance in dataset.uniques:
-        sum_score += get_data_MDL_one_instance(model, instance, dataset)*dataset.counts[repr(instance)] # number of occurrences
-    return sum_score
+        l += get_data_MDL_one_instance(model, instance, dataset) * dataset.counts[repr(instance)] # number of occurrences
+    return l
 
 def get_MDL(model, dataset):
-    """ Compute the total MDL (model + data)
+    """ Computes the total MDL (model + data)
     """
     model_MDL = model.get_model_MDL()
     data_MDL = get_data_MDL(model, dataset)
