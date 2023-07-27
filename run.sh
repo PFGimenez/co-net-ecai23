@@ -6,11 +6,16 @@ rm *.csv.*
 # compress
 for d in $(ls *.csv); do
     echo "Compressing $d..."
-    gzip -9 -k $d > /dev/null # deflate
-    bzip2 -9 -k $d > /dev/null # bzip2
-    lzma -9 -k $d > /dev/null # LZMA
-    p7zip -k $d > /dev/null # LZMA2
-    zstd -19 -k $d 2> /dev/null # zstd
+    gzip --best -k $d > /dev/null # deflate
+    bzip2 --best -k $d > /dev/null # bzip2
+    lzma --best -k $d > /dev/null # LZMA
+    zstd --best -k $d 2> /dev/null # zstd
+    lz4 --best -k $d $d.l4 2> /dev/null # LZ4
+    7z a -m0=PPMd -mx=9 $d.ppmd $d > /dev/null # PPMd
+    brotli --best -k $d > /dev/null # brotli
+    zpaq -m5 add $d.zpaq $d 1> /dev/null 2> /dev/null # zpaq
+    mscompress $d > /dev/null # LZ77
+    mv "$d"_ $d.lz77
 done
 
 echo -n "    Compression rate:"
