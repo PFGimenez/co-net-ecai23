@@ -3,7 +3,7 @@
 ## Dependencies
 
 - Python 3 with pandas (run `pip install -r requirements.txt` if necessary)
-- Compression algorithms: you can probably install them with your package manager. For example, on a Debian-based distro, you can do `sudo apt install p7zip-full zstd lz4 brotli zpaq mscompress`
+- Compression algorithms: you can probably install them with your package manager. For example, on a Debian-based distro, you can do `sudo apt install p7zip-full zstd lz4 brotli zpaq mscompress`.
 
 ## Experiment
 
