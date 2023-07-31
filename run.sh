@@ -16,7 +16,7 @@ for d in $(ls *.csv); do
     zpaq -m5 add $d.zpaq $d 1> /dev/null 2> /dev/null # zpaq
     mscompress $d > /dev/null # LZ77
     mv "$d"_ $d.lz77
-    # snzip -k $d # snappy, https://github.com/kubo/snzip
+    # snzip -k $d # snappy, https://github.com/kubo/snzip (bad compression performances)
 done
 
 echo ""
