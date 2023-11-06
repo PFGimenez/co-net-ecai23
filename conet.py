@@ -8,8 +8,8 @@ class CONet:
     def __init__(self):
         self.topo_order = []
 
-    def get_model_MDL(self):
-        """ Computes the MDL of the model
+    def get_model_cost(self):
+        """ Computes the cost of the model
         """
         l = mdl.code_length_integer(len(self.topo_order)) # how many variable in total
         for n in self.topo_order:

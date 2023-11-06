@@ -19,8 +19,8 @@ def check_soundness(model, variables, instance):
         code[v] = instance[v]
     return model.get_preferred_extension(code) == instance
 
-def get_data_MDL_one_instance(model, instance, dataset):
-    """ Gets the MDL of one instance
+def get_data_cost_one_instance(model, instance, dataset):
+    """ Gets the cost of one instance
     """
     s = model.get_minimum_data(instance)
     assert(check_soundness(model, s, instance))
@@ -30,17 +30,17 @@ def get_data_MDL_one_instance(model, instance, dataset):
         l += math.log2(len(dataset.domains[v]) - 1) # which value (not the optimal one)
     return l
 
-def get_data_MDL(model, dataset):
-    """ Gets the MDL of a dataset
+def get_data_cost(model, dataset):
+    """ Gets the cost of a dataset
     """
     l = code_length_integer(dataset.dataset_len) # length of dataset
     for instance in dataset.uniques:
-        l += get_data_MDL_one_instance(model, instance, dataset) * dataset.counts[repr(instance)] # number of occurrences
+        l += get_data_cost_one_instance(model, instance, dataset) * dataset.counts[repr(instance)] # number of occurrences
     return l
 
 def get_MDL(model, dataset):
-    """ Computes the total MDL (model + data)
+    """ Computes the MDL (cost model + cost data)
     """
-    model_MDL = model.get_model_MDL()
-    data_MDL = get_data_MDL(model, dataset)
-    return model_MDL + data_MDL
+    model_cost = model.get_model_cost()
+    data_cost = get_data_cost(model, dataset)
+    return model_cost + data_cost
